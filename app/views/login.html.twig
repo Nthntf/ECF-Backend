@@ -11,7 +11,12 @@
 			<div class="flex items-center mb-7">
 				<h1 class="inline-block align-middle text-3xl text-gray-500"></div>
 				<div>
-					<form action="/login" method="post">
+					<form action="/login" method="post" class="w-80">
+					    {% if error %}
+							<p class="text-red-500">
+								{{ error }}
+							</p>
+						{% endif %}
 						<div class="flex flex-col mb-3">
 							<label class="text-xl mb-1" for="username">Login Utilisateur</label>
 							<input class="border-2 border-gray-300 px-3 py-1" type="text" name="username" placeholder="Login utilisateur">
@@ -20,7 +25,7 @@
 							<label class="text-xl mb-1" for="password">Mot de passe</label>
 							<input class="border-2 border-gray-300 px-3 py-1" type="password" name="password" placeholder="Mot de passe">
 						</div>
-						<input class="py-1.5 text-xl cool-btn w-full hover:cursor-pointer hover:border-2" type="submit" value="LOGIN">
+						<input class="py-1.5 text-xl cool-btn w-full hover:cursor-pointer hover:outline-2" type="submit" value="LOGIN">
 					</form>
 				</div>
 			</div>

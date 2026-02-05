@@ -19,12 +19,11 @@ class LoginController extends BaseController
             $userModel = new UserModel();
             $user = $userModel->findByUsername($username);
 
+            // Regarde si bon password
             if (!$user || !password_verify($password, $user['password'])) {
-                $this->render('login.html.twig', [
-                    'error' => 'Nom d\'utilisateur ou mot de passe incorrect',
-                    'username' => $username
-                ]);
-                return;
+                $_SESSION['error'] = 'Nom d\'utilisateur ou mot de passe incorrect';
+                header('Location: /login');
+                exit;
             }
 
             // Stocke l'utilisateur en session
@@ -38,7 +37,12 @@ class LoginController extends BaseController
             exit;
         }
 
-        $this->render('login.html.twig');
+        $error = $_SESSION['error'] ?? null;
+        unset($_SESSION['error']);
+
+        $this->render('login.html.twig', [
+            'error' => $error
+        ]);
     }
 
     public function logout(): void

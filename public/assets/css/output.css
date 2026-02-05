@@ -7,6 +7,7 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-red-500: oklch(63.7% 0.237 25.331);
     --color-gray-300: oklch(87.2% 0.01 258.338);
     --color-gray-500: oklch(55.1% 0.027 264.364);
     --color-black: #000;
@@ -214,6 +215,9 @@
   .h-screen {
     height: 100vh;
   }
+  .w-80 {
+    width: calc(var(--spacing) * 80);
+  }
   .w-full {
     width: 100%;
   }
@@ -273,6 +277,9 @@
   .text-gray-500 {
     color: var(--color-gray-500);
   }
+  .text-red-500 {
+    color: var(--color-red-500);
+  }
   .text-white {
     color: var(--color-white);
   }
@@ -283,11 +290,11 @@
       }
     }
   }
-  .hover\:border-2 {
+  .hover\:outline-2 {
     &:hover {
       @media (hover: hover) {
-        border-style: var(--tw-border-style);
-        border-width: 2px;
+        outline-style: var(--tw-outline-style);
+        outline-width: 2px;
       }
     }
   }
@@ -324,6 +331,11 @@
   syntax: "*";
   inherits: false;
 }
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-duration {
   syntax: "*";
   inherits: false;
@@ -337,6 +349,7 @@
     *, ::before, ::after, ::backdrop {
       --tw-border-style: solid;
       --tw-font-weight: initial;
+      --tw-outline-style: solid;
       --tw-duration: initial;
       --tw-ease: initial;
     }
