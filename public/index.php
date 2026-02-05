@@ -13,7 +13,6 @@ $router = new AltoRouter();
 require_once __DIR__ . '/../app/config/routes.php';
 
 $match = $router->match();
-
 if (!$match) {
     http_response_code(404);
     echo '404 - Page non trouvée';

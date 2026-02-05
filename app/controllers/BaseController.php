@@ -15,6 +15,8 @@ class BaseController
         $this->twig = new Environment($loader, [
             'cache' => false,
         ]);
+        $this->twig->addGlobal('username', isset($_SESSION['user']['username'])
+            ? ucfirst($_SESSION['user']['username']) : null);
     }
 
     protected function render($template, $data = []): void
