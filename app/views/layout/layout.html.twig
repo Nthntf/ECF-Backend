@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link rel="stylesheet" href="/assets/css/output.css"/>
+		<title>{{ title }}</title>
+	</head>
+	<body>
+		<header class="">
+			<nav class="flex flex-row justify-center bg-black">
+				<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/home">Accueil</a>
+				<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/books">Livres</a>
+				<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/authors">Auteurs</a>
+				<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/categories">Categories</a>
+			</nav>
+		</header>
+		<main>
+			<p>Bienvenue
+				{{ username }}
+				!</p>
+			{% block content %}{% endblock %}
+		</main>
+	</body>
+</html>

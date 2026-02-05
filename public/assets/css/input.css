@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.cool-btn {
+    @apply transition duration-200 ease-in-out bg-black text-white font-bold hover:bg-white hover:text-black;
+}
