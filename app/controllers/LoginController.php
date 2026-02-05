@@ -30,6 +30,7 @@ class LoginController extends BaseController
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'username' => $user['username'],
+                'role' => $user['role'],
             ];
 
             // Redirige vers /home

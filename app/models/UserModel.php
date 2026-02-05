@@ -20,7 +20,7 @@ class UserModel
     {
         try {
             $query = $this->db->prepare(
-                'SELECT id, username, password FROM users WHERE username = :username'
+                'SELECT id, username, role, password FROM users WHERE username = :username'
             );
             $query->execute(['username' => $username]);
             $user = $query->fetch(PDO::FETCH_ASSOC);
