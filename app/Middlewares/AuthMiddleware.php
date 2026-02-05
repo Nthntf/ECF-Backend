@@ -2,7 +2,7 @@
 
 namespace App\Middlewares;
 
-class AuthMiddleware
+final class AuthMiddleware
 {
     public static function check(): void
     {

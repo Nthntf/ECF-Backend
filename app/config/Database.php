@@ -12,11 +12,11 @@ class Database
 
     private function __construct()
     {
-        $host = '127.0.0.1';
-        $db   = 'bibliotheque';
-        $user = 'root';
-        $pass = '';
-        $charset = 'utf8mb4';
+        $host = $_ENV['DB_HOST'];
+        $db   = $_ENV['DB_DATABASE'];
+        $user = $_ENV['DB_USERNAME'];
+        $pass = $_ENV['DB_PASSWORD'];
+        $charset = $_ENV['DB_CHARSET'];
 
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 

@@ -5,7 +5,7 @@ namespace App\Controllers;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-class BaseController
+abstract class BaseController
 {
     protected Environment $twig;
 
