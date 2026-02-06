@@ -11,4 +11,9 @@ $router->map('GET', '/', 'HomeController@redirect', 'homePage');
 // Pages
 $router->map('GET', '/books', 'BookController@index', 'books');
 $router->map('GET', '/authors', 'AuthorController@index', 'authors');
+
 $router->map('GET', '/categories', 'CategorieController@index', 'categories');
+$router->map('GET', '/categories/add', 'CategorieController@add');
+$router->map('GET', '/categories/[i:id]/edit', 'CategorieController@edit');
+$router->map('POST', '/categories/[i:id]/update', 'CategorieController@update');
+$router->map('POST', '/categories/[i:id]/delete', 'CategorieController@delete');

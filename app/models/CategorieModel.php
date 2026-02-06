@@ -16,19 +16,19 @@ class CategorieModel
         $this->db = Database::getInstance();
     }
 
-    public function findByUsername(string $username): ?array
+    public function getAllCategories(): ?array
     {
         try {
             $query = $this->db->prepare(
-                'SELECT id, nom, FROM categories'
+                'SELECT id, nom FROM categories'
             );
             $query->execute();
-            $categoriesData = $query->fetch(PDO::FETCH_ASSOC);
+            $categoriesData = $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log($e->getMessage());
             throw new RuntimeException("Erreur lors de la récupération des catégories");
         }
 
-        return $categoriesData ?: null;
+        return $categoriesData;
     }
 }

@@ -1,9 +1,26 @@
 @import "tailwindcss";
 
 .cool-btn {
-    @apply transition duration-200 ease-in-out bg-black text-white font-bold hover:bg-white hover:text-black;
+    @apply transition duration-200 ease-in-out text-white font-bold hover:bg-white hover:text-black;
 }
 
-body {
+.login-btn {
+    @apply text-white bg-linear-to-r from-stone-400 via-stone-500 to-stone-600 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-stone-300 dark:focus:ring-stone-800 rounded-2xl text-center leading-5;
+}
+
+.add-btn {
+    @apply text-white bg-linear-to-r from-green-400 via-green-500 to-green-600 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium text-sm px-2 py-1.5 rounded-2xl text-center leading-5;
+}
+
+.edit-btn {
+    @apply text-white bg-linear-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium text-sm px-2 py-1.5 rounded-2xl text-center leading-5;
+}
+
+.delete-btn {
+    @apply text-white bg-linear-to-r from-red-400 via-red-500 to-red-600 hover:bg-linear-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium text-sm px-2 py-1.5 rounded-2xl text-center leading-5;
+}
+
+.bg-hex {
+    background-color: #1a1a1a;
     background-image: url("../images/background.jpg");
 }

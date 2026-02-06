@@ -1,5 +1,63 @@
 {% extends "layout/layout.html.twig" %}
 
 {% block content %}
-	Page categories
+	<article class="rounded bg-stone-200 mx-auto w-fit py-5 px-10 my-5">
+		<div class="flex justify-between items-center mb-4">
+			<a href="/categorie/new" class="add-btn">
+				+ Ajouter une catégorie
+			</a>
+			<form method="GET" action="" class="flex items-center gap-2">
+				<label for="sort" class="text-sm text-stone-700">
+					Trier par :
+				</label>
+				<select name="sort" id="sort" class="rounded border-stone-300 text-sm focus:ring-emerald-500 focus:border-emerald-500" onchange="this.form.submit()">
+					<option value="id_asc">ID ↑</option>
+					<option value="id_desc">ID ↓</option>
+					<option value="name_asc">Nom A–Z</option>
+					<option value="name_desc">Nom Z–A</option>
+				</select>
+			</form>
+		</div>
+
+		<table class="table-auto border-collapse">
+			<thead>
+				<tr class="border-b border-stone-400">
+					<th class="px-6 py-3 text-left">ID</th>
+					<th class="px-6 py-3 text-left">Nom</th>
+					<th class="px-6 py-3 text-center">Modifier</th>
+					<th class="px-6 py-3 text-center">Supprimer</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for categorie in categories %}
+					<tr class="border-b border-stone-300">
+						<td class="px-6 py-3">{{ categorie.id }}</td>
+						<td class="px-6 py-3">{{ categorie.nom }}</td>
+
+						<td class="px-6 py-3 text-center">
+							<a href="/categorie/{{ categorie.id }}/edit" class="edit-btn">
+								Modifier
+							</a>
+						</td>
+
+						<td class="px-6 py-3 text-center">
+							<form method="POST" action="/categorie/{{ categorie.id }}/delete">
+								<button type="submit" class="delete-btn">
+									Supprimer
+								</button>
+							</form>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="4" class="px-6 py-3 text-center">
+							Aucune catégorie trouvée
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</article>
+
 {% endblock %}
