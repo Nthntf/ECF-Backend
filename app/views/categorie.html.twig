@@ -59,5 +59,46 @@
 			</tbody>
 		</table>
 	</article>
-
+	<!-- Modal Ajouter -->
+	<div id="modal-add" class="hidden fixed inset-0 bg-black/50 items-center justify-center">
+		<form action="" method="POST" class="bg-white rounded p-6 w-96">
+			<input type="text" class="border-2 border-gray-300 px-3 py-1 my-0.5" placeholder="Nom catégorie">
+			<div class="flex justify-end gap-2 my-2">
+				<button id="closeModal" class="cancel-btn">
+					Annuler
+				</button>
+				<button class="add-btn">
+					Ajouter
+				</button>
+			</div>
+		</form>
+	</div>
+	<!-- Modal Supprimer -->
+	<div id="modal-add" class="hidden fixed inset-0 bg-black/50 items-center justify-center">
+		<form action="" method="POST" class="bg-white rounded p-6 w-96">
+			<p class="px-3 py-1 my-0.5">Voulez-vous vraiment supprimer cette catégorie ?</p>
+			<div class="flex justify-end gap-2 my-2">
+				<button id="closeModal" class="cancel-btn">
+					Annuler
+				</button>
+				<button class="delete-btn">
+					Supprimer
+				</button>
+			</div>
+		</form>
+	</div>
+	<!-- Modal Modifier -->
+	<div id="modal-add" class="hidden fixed inset-0 bg-black/50 items-center justify-center">
+		<form action="" method="POST" class="bg-white rounded p-6 w-96">
+			<input type="text" class="border-2 border-gray-300 px-3 py-1 my-0.5" placeholder="Nouveau nom">
+			<div class="flex justify-end gap-2 my-2">
+				<button id="closeModal" class="cancel-btn">
+					Annuler
+				</button>
+				<button class="add-btn">
+					Confirmer
+				</button>
+			</div>
+		</form>
+	</div>
 {% endblock %}
