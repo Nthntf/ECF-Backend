@@ -23,20 +23,20 @@ $(function () {
         const id = getId($btn);
 
         if (modalType === "add") {
-            $("#addForm").attr("action", "/" + resource + "/create");
+            $("#addForm").attr("action", "/" + resource + "/add");
             openModal($("#modal-add"));
         }
 
-        if (modalType === "edit") {
+        if (modalType === "update") {
             const nom = $btn.data("nom");
 
-            $("#editForm").attr("action", "/" + resource + "/" + id + "/edit");
+            $("#updateForm").attr("action", "/" + resource + "/" + id + "/update");
 
-            if ($("#editNom").length) {
-                $("#editNom").val(nom);
+            if ($("#updateNom").length) {
+                $("#updateNom").val(nom);
             }
 
-            openModal($("#modal-edit"));
+            openModal($("#modal-update"));
         }
 
         if (modalType === "delete") {

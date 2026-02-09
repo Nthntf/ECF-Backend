@@ -3,9 +3,12 @@
 {% block content %}
 	<article class="rounded bg-stone-200 mx-auto w-fit py-5 px-10 my-5">
 		<div class="flex justify-between items-center mb-4">
-			<button type="button" class="add-btn open-modal" data-resource="categorie" data-modal="add">
-				+ Ajouter une catégorie
-			</button>
+			{% if role === 'admin' %}
+				<button type="button" class="add-btn open-modal" data-resource="categories" data-modal="add">
+					+ Ajouter une catégorie
+				</button>
+			{% endif %}
+
 			<form method="GET" action="" class="flex items-center gap-2">
 				<label for="sort" class="text-sm text-stone-700">
 					Trier par :
@@ -24,8 +27,11 @@
 				<tr class="border-b border-stone-400">
 					<th class="px-6 py-3 text-left">ID</th>
 					<th class="px-6 py-3 text-left">Nom</th>
-					<th class="px-6 py-3 text-center">Modifier</th>
-					<th class="px-6 py-3 text-center">Supprimer</th>
+					{% if role === 'admin' %}
+						<th class="px-6 py-3 text-center">Modifier</th>
+						<th class="px-6 py-3 text-center">Supprimer</th>
+					{% endif %}
+
 				</tr>
 			</thead>
 
@@ -35,19 +41,22 @@
 						<td class="px-6 py-3">{{ categorie.id }}</td>
 						<td class="px-6 py-3">{{ categorie.nom }}</td>
 
-						<td class="px-6 py-3 text-center">
-							<button class="edit-btn open-modal" data-resource="categorie" data-modal="edit" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
-								Modifier
-							</button>
-						</td>
-
-						<td class="px-6 py-3 text-center">
-							<form method="POST" action="/categorie/{{ categorie.id }}/delete">
-								<button type="button" class="delete-btn open-modal" data-resource="categorie" data-modal="delete" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
-									Supprimer
+						{% if role === 'admin' %}
+							<td class="px-6 py-3 text-center">
+								<button class="update-btn open-modal" data-resource="categories" data-modal="update" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
+									Modifier
 								</button>
-							</form>
-						</td>
+							</td>
+
+							<td class="px-6 py-3 text-center">
+								<form method="POST" action="/categorie/{{ categorie.id }}/delete">
+									<button type="button" class="delete-btn open-modal" data-resource="categories" data-modal="delete" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
+										Supprimer
+									</button>
+								</form>
+							</td>
+						{% endif %}
+
 					</tr>
 				{% else %}
 					<tr>
@@ -61,7 +70,7 @@
 	</article>
 	<!-- Modal Ajouter -->
 	<div id="modal-add" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
-		<form action="/categorie/create" method="POST" class="bg-white rounded p-6 w-96">
+		<form action="" method="POST" class="bg-white rounded p-6 w-96" id="addForm">
 			<input type="text" name="nom" class="border-2 border-gray-300 px-3 py-1 my-1 w-full" placeholder="Nom catégorie" required>
 			<div class="flex justify-end gap-2 mt-4">
 				<button type="button" class="cancel-btn close-modal">Annuler</button>
@@ -71,7 +80,7 @@
 	</div>
 	<!-- Modal Supprimer -->
 	<div id="modal-delete" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
-		<form method="POST" class="bg-white rounded p-6 w-96" id="deleteForm">
+		<form action="" method="POST" class="bg-white rounded p-6 w-96" id="deleteForm">
 			<p class="delete-msg"></p>
 			<div class="flex justify-end gap-2 mt-4">
 				<button type="button" class="cancel-btn close-modal">Annuler</button>
@@ -80,9 +89,9 @@
 		</form>
 	</div>
 	<!-- Modal Modifier -->
-	<div id="modal-edit" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
-		<form method="POST" class="bg-white rounded p-6 w-96" id="editForm">
-			<input type="text" name="nom" id="editNom" class="border-2 border-gray-300 px-3 py-1 my-1 w-full" required>
+	<div id="modal-update" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
+		<form action="" method="POST" class="bg-white rounded p-6 w-96" id="updateForm">
+			<input type="text" name="nom" id="updateNom" class="border-2 border-gray-300 px-3 py-1 my-1 w-full" required>
 			<div class="flex justify-end gap-2 mt-4">
 				<button type="button" class="cancel-btn close-modal">Annuler</button>
 				<button class="add-btn">Confirmer</button>

@@ -14,11 +14,14 @@
 	<body class="bg-stone-700">
 		<header>
 			<nav class="relative flex justify-center bg-black">
-				<p class="absolute left-4 px-2.5 py-4.5 text-2xl text-white font-bold">Bienvenue
+				<p class="absolute left-4 px-2.5 py-4.5 text-2xl flex text-white">
+					<img class="w-7.5" src="assets/images/user.png" alt="user"/>
 					{% if username %}
 						{{username}}
+					{% else %}
+						Invité
 					{% endif %}
-					!</p>
+				</p>
 				<div class="flex">
 					<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/home">Accueil</a>
 					<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/books">Livres</a>
