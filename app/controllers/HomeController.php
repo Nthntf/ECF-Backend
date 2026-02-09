@@ -15,6 +15,6 @@ class HomeController extends BaseController
 
     public function index()
     {
-        $this->render('home.html.twig', ['title' => 'Accueil']);
+        $this->render('home.html.twig', ['title' => 'Accueil', 'modal' => false]);
     }
 }

@@ -8,6 +8,6 @@ class BookController extends BaseController
 {
     public function index()
     {
-        $this->render('book.html.twig', ['title' => 'Bibliothèque de livres']);
+        $this->render('book.html.twig', ['title' => 'Bibliothèque de livres', 'modal' => true]);
     }
 }

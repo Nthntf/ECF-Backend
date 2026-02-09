@@ -18,7 +18,7 @@ npx @tailwindcss/cli -i ./public/assets/css/input.css -o ./public/assets/css/out
 
 Front:
 
-- JS
+- JQuery
 - TailwindCSS
 
 Back:

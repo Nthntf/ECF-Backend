@@ -11,6 +11,6 @@ class CategorieController extends BaseController
     {
         $categorieModel = new CategorieModel;
         $categories = $categorieModel->getAllCategories();
-        $this->render('categorie.html.twig', ['title' => 'Les categories', 'categories' => $categories, 'role' => $_SESSION['user']['role']]);
+        $this->render('categorie.html.twig', ['title' => 'Les categories', 'categories' => $categories, 'role' => $_SESSION['user']['role'], 'modal' => true]);
     }
 }
