@@ -31,4 +31,50 @@ class CategorieModel
 
         return $categoriesData;
     }
+
+    public function addCategorie(string $nom): bool
+    {
+        try {
+            $query = $this->db->prepare(
+                'INSERT INTO categories (nom) VALUES (:nom)'
+            );
+            return $query->execute([
+                ':nom' => $nom
+            ]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors de l'ajout de la catégorie");
+        }
+    }
+
+    public function updateCategorie(int $id, string $nom): bool
+    {
+        try {
+            $query = $this->db->prepare(
+                'UPDATE categories SET nom = :nom WHERE id = :id'
+            );
+            return $query->execute([
+                ':id'  => $id,
+                ':nom' => $nom
+            ]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors de la modification de la catégorie");
+        }
+    }
+
+    public function deleteCategorie(int $id): bool
+    {
+        try {
+            $query = $this->db->prepare(
+                'DELETE FROM categories WHERE id = :id'
+            );
+            return $query->execute([
+                ':id' => $id
+            ]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors de la suppression de la catégorie");
+        }
+    }
 }
