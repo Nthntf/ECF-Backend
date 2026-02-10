@@ -1,3 +1,174 @@
 {% extends "layout/layout.html.twig" %}
 
-{% block content %}{% endblock %}
+{% block content %}
+	<article class="rounded bg-stone-200 mx-auto py-5 px-10 my-5 max-w-8/10">
+
+		{% if role == 'admin' %}
+			<button type="button" class="add-btn open-modal mb-4" data-resource="books" data-modal="add">
+				+ Ajouter un livre
+			</button>
+		{% endif %}
+
+		<div class="flex flex-row flex-wrap justify-center gap-3">
+			{% for book in livres %}
+				<div class="book-card w-72 h-80 flex flex-col border p-6">
+
+					{% if role == 'admin' %}
+						<div class="flex gap-2 mb-3">
+							<button class="update-btn open-modal" data-resource="books" data-modal="update" data-id="{{ book.id }}" data-titre="{{ book.titre }}" data-auteur_id="{{ book.auteur.id }}" data-categorie_id="{{ book.categorie.id }}" data-annee_publication="{{ book.annee_publication }}" data-isbn="{{ book.isbn }}" data-disponible="{{ book.disponible }}" data-like="{{ book.is_liked }}" data-synopsis="{{ book.synopsis|e('html_attr') }}">
+								Modifier
+							</button>
+
+							<form method="POST" action="/book/{{ book.id }}/delete">
+								<button type="button" class="delete-btn open-modal" data-resource="books" data-modal="delete" data-id="{{ book.id }}" data-titre="{{ book.titre }}">
+									Supprimer
+								</button>
+							</form>
+						</div>
+					{% endif %}
+
+					<h2 class="text-xl font-semibold mb-2">
+						{{ book.titre }}
+					</h2>
+
+					<p class="text-sm mb-1">
+						<strong>Auteur :</strong>
+						{{ book.auteur.prenom }}
+						{{ book.auteur.nom }}
+					</p>
+
+					<p class="text-sm mb-1">
+						<strong>Catégorie :</strong>
+						{{ book.categorie.nom }}
+					</p>
+
+					<p class="text-sm mb-1">
+						<strong>Année :</strong>
+						{{ book.annee_publication }}
+					</p>
+
+					<p class="text-sm mb-1">
+						<strong>ISBN :</strong>
+						{{ book.isbn }}
+					</p>
+
+					<p class="text-sm mb-1">
+						<strong>Disponible :</strong>
+						{{ book.disponible ? 'Oui' : 'Non' }}
+					</p>
+
+					<button class="like-btn mt-2" data-id="{{ book.id }}" data-like="{{ book.is_liked }}">
+						{{ book.is_liked ? 'Aimé' : 'Aimer' }}
+					</button>
+
+					<p class="text-sm mt-2">
+						{{ book.synopsis|raw }}
+					</p>
+				</div>
+			{% else %}
+				<p>Aucun livre trouvé</p>
+			{% endfor %}
+		</div>
+	</article>
+
+	{% if role == 'admin' %}
+
+		<!-- Modal Ajouter -->
+		<div id="modal-add" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
+			<form method="POST" action="/books/add" class="bg-white rounded p-6 w-96">
+				<input type="text" name="titre" placeholder="Titre" class="border w-full my-1 px-2 py-1" required>
+				<select name="auteur_id" class="border w-full my-1 px-2 py-1" required>
+					<option value="">-- Choisir un auteur --</option>
+					{% for auteur in auteurs %}
+						<option value="{{ auteur.id }}">
+							{{ auteur.prenom }}
+							{{ auteur.nom }}
+						</option>
+					{% endfor %}
+				</select>
+
+				<select name="categorie_id" class="border w-full my-1 px-2 py-1" required>
+					<option value="">-- Choisir une catégorie --</option>
+					{% for categorie in categories %}
+						<option value="{{ categorie.id }}">
+							{{ categorie.nom }}
+						</option>
+					{% endfor %}
+				</select>
+				<input type="number" name="annee_publication" placeholder="Année de publication" class="border w-full my-1 px-2 py-1" required>
+				<input type="text" name="isbn" placeholder="ISBN" class="border w-full my-1 px-2 py-1" required>
+
+				<select name="disponible" class="border w-full my-1 px-2 py-1">
+					<option value="1">Disponible</option>
+					<option value="0">Indisponible</option>
+				</select>
+
+				<textarea name="synopsis" placeholder="Synopsis" class="border w-full my-1 px-2 py-1" required></textarea>
+
+				<select name="like" class="border w-full my-1 px-2 py-1">
+					<option value="0">Non aimé</option>
+					<option value="1">Aimé</option>
+				</select>
+
+				<div class="flex justify-end gap-2 mt-4">
+					<button type="button" class="cancel-btn close-modal">Annuler</button>
+					<button class="add-btn">Ajouter</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Modal Supprimer -->
+		<div id="modal-delete" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
+			<form method="POST" class="bg-white rounded p-6 w-96" id="deleteForm">
+				<p class="delete-msg"></p>
+				<div class="flex justify-end gap-2 mt-4">
+					<button type="button" class="cancel-btn close-modal">Annuler</button>
+					<button class="delete-btn">Supprimer</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Modal Modifier -->
+		<div id="modal-update" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
+			<form method="POST" class="bg-white rounded p-6 w-96" id="updateForm">
+				<input type="text" name="titre" id="updateTitre" class="border w-full my-1 px-2 py-1" required>
+				<select name="auteur_id" id="updateAuteurId" class="border w-full my-1 px-2 py-1" required>
+					{% for auteur in auteurs %}
+						<option value="{{ auteur.id }}">
+							{{ auteur.prenom }}
+							{{ auteur.nom }}
+						</option>
+					{% endfor %}
+				</select>
+
+				<select name="categorie_id" id="updateCategorieId" class="border w-full my-1 px-2 py-1" required>
+					{% for categorie in categories %}
+						<option value="{{ categorie.id }}">
+							{{ categorie.nom }}
+						</option>
+					{% endfor %}
+				</select>
+				<input type="number" name="annee_publication" id="updateAnnee" class="border w-full my-1 px-2 py-1" required>
+				<input type="text" name="isbn" id="updateIsbn" class="border w-full my-1 px-2 py-1" required>
+
+				<select name="disponible" id="updateDisponible" class="border w-full my-1 px-2 py-1">
+					<option value="1">Disponible</option>
+					<option value="0">Indisponible</option>
+				</select>
+
+				<textarea name="synopsis" id="updateSynopsis" class="border w-full my-1 px-2 py-1" required></textarea>
+
+				<select name="like" id="updateLike" class="border w-full my-1 px-2 py-1">
+					<option value="0">Non aimé</option>
+					<option value="1">Aimé</option>
+				</select>
+
+				<div class="flex justify-end gap-2 mt-4">
+					<button type="button" class="cancel-btn close-modal">Annuler</button>
+					<button class="add-btn">Confirmer</button>
+				</div>
+			</form>
+		</div>
+
+	{% endif %}
+{% endblock %}

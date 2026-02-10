@@ -19,7 +19,7 @@
 							</button>
 
 							<form method="POST" action="/author/{{ author.id }}/delete">
-								<button type="button" class="delete-btn open-modal" data-resource="authors" data-modal="delete" data-id="{{ author.id }}" data-nom="{{ author.prenom }} {{ author.nom }}">
+								<button type="button" class="delete-btn open-modal" data-resource="authors" data-modal="delete" data-id="{{ author.id }}" data-fullname="{{ author.prenom }} {{ author.nom }}">
 									Supprimer
 								</button>
 							</form>

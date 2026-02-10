@@ -34,39 +34,48 @@ $(function () {
 
             // ===== CATEGORIES =====
             if (resource === "categories") {
-                const nom = $btn.data("nom");
-                $("#updateNom").val(nom);
+                $("#updateNom").val($btn.data("nom"));
             }
 
             // ===== AUTHORS =====
             if (resource === "authors") {
-                const prenom = $btn.data("prenom");
-                const nom = $btn.data("nom");
-                const biographie = $btn.data("biographie");
+                $("#updatePrenom").val($btn.data("prenom"));
+                $("#updateNom").val($btn.data("nom"));
+                $("#updateBiographie").val($btn.data("biographie"));
+            }
 
-                $("#updatePrenom").val(prenom);
-                $("#updateNom").val(nom);
-                $("#updateBiographie").val(biographie);
+            // ===== BOOKS =====
+            if (resource === "books") {
+                $("#updateTitre").val($btn.data("titre"));
+                $("#updateAuteurId").val($btn.data("auteur_id"));
+                $("#updateCategorieId").val($btn.data("categorie_id"));
+                $("#updateAnnee").val($btn.data("annee_publication"));
+                $("#updateIsbn").val($btn.data("isbn"));
+                $("#updateDisponible").val($btn.data("disponible"));
+                $("#updateLike").val($btn.data("like"));
+                $("#updateSynopsis").val($btn.data("synopsis"));
             }
 
             openModal($("#modal-update"));
         }
+
         // ===== DELETE =====
         if (modalType === "delete") {
             let message = "";
 
             if (resource === "categories") {
-                const nom = $btn.data("nom");
-                message = `Voulez-vous vraiment supprimer la catégorie "<strong>${nom}</strong>" ?`;
+                message = `Voulez-vous vraiment supprimer la catégorie "<strong>${$btn.data("nom")}</strong>" ?`;
             }
 
             if (resource === "authors") {
-                const nom = $btn.data("nom");
-                message = `Voulez-vous vraiment supprimer l'auteur "<strong>${nom}</strong>" ?`;
+                message = `Voulez-vous vraiment supprimer l'auteur "<strong>${$btn.data("fullname")}</strong>" ?`;
+            }
+
+            if (resource === "books") {
+                message = `Voulez-vous vraiment supprimer le livre "<strong>${$btn.data("titre")}</strong>" ?`;
             }
 
             $(".delete-msg").html(message);
-
             $("#deleteForm").attr("action", "/" + resource + "/" + id + "/delete");
 
             openModal($("#modal-delete"));

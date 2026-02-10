@@ -3,11 +3,180 @@
 namespace App\Controllers;
 
 use App\controllers\BaseController;
+use App\models\BookModel;
+use App\models\AuthorModel;
+use App\models\CategorieModel;
+
+use Parsedown;
 
 class BookController extends BaseController
 {
     public function index()
     {
-        $this->render('book.html.twig', ['title' => 'Bibliothèque de livres', 'modal' => true]);
+        $authorModel = new AuthorModel();
+        $categoryModel = new CategorieModel();
+        $bookModel = new BookModel();
+
+        $auteurs = $authorModel->getAllAuthors();
+        $categories = $categoryModel->getAllCategories();
+        $books = $bookModel->getAllBooks();
+
+
+        $parsedown = new Parsedown();
+        $livres = [];
+
+        foreach ($books as $book) {
+            $livres[] = [
+                'id' => $book['id'],
+                'titre' => $book['titre'],
+                'annee_publication' => $book['annee_publication'],
+                'isbn' => $book['isbn'],
+                'disponible' => $book['disponible'],
+                'synopsis' => $parsedown->text($book['synopsis']),
+                'is_liked' => $book['is_liked'],
+
+                'auteur' => [
+                    'id' => $book['auteur_id'],
+                    'nom' => $book['auteur_nom'],
+                    'prenom' => $book['auteur_prenom']
+                ],
+
+                'categorie' => [
+                    'id' => $book['categorie_id'],
+                    'nom' => $book['categorie_nom']
+                ]
+            ];
+        }
+
+        $this->render('book.html.twig', [
+            'title' => 'Les livres',
+            'livres' => $livres,
+            'auteurs' => $auteurs,
+            'categories' => $categories,
+            'modal' => true
+        ]);
+    }
+
+    public function add()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /books');
+            exit;
+        }
+
+        if (
+            empty($_POST['titre']) ||
+            empty($_POST['auteur_id']) ||
+            empty($_POST['categorie_id']) ||
+            empty($_POST['annee_publication']) ||
+            empty($_POST['isbn']) ||
+            empty($_POST['synopsis'])
+        ) {
+            $_SESSION['error'] = "Tous les champs sont obligatoires";
+            header('Location: /books');
+            exit;
+        }
+
+        $titre = trim($_POST['titre']);
+        $auteur_id = (int) $_POST['auteur_id'];
+        $categorie_id = (int) $_POST['categorie_id'];
+        $annee_publication = (int) $_POST['annee_publication'];
+        $isbn = trim($_POST['isbn']);
+        $synopsis = trim($_POST['synopsis']);
+        $disponible = isset($_POST['disponible']);
+        $like = isset($_POST['like']);
+
+        try {
+            $bookModel = new BookModel();
+            $bookModel->addBook(
+                $titre,
+                $auteur_id,
+                $categorie_id,
+                $annee_publication,
+                $isbn,
+                $disponible,
+                $synopsis,
+                $like
+            );
+
+            $_SESSION['success'] = "Livre ajouté avec succès";
+        } catch (\RuntimeException $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        header('Location: /books');
+        exit;
+    }
+
+    public function update(int $id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /books');
+            exit;
+        }
+
+        if (
+            empty($_POST['titre']) ||
+            empty($_POST['auteur_id']) ||
+            empty($_POST['categorie_id']) ||
+            empty($_POST['annee_publication']) ||
+            empty($_POST['isbn']) ||
+            empty($_POST['synopsis'])
+        ) {
+            $_SESSION['error'] = "Tous les champs sont obligatoires";
+            header('Location: /books');
+            exit;
+        }
+
+        $titre = trim($_POST['titre']);
+        $auteur_id = (int) $_POST['auteur_id'];
+        $categorie_id = (int) $_POST['categorie_id'];
+        $annee_publication = (int) $_POST['annee_publication'];
+        $isbn = trim($_POST['isbn']);
+        $synopsis = trim($_POST['synopsis']);
+        $disponible = isset($_POST['disponible']);
+        $like = isset($_POST['like']);
+
+        try {
+            $bookModel = new BookModel();
+            $bookModel->updateBook(
+                $id,
+                $titre,
+                $auteur_id,
+                $categorie_id,
+                $annee_publication,
+                $isbn,
+                $disponible,
+                $synopsis,
+                $like
+            );
+
+            $_SESSION['success'] = "Livre modifié avec succès";
+        } catch (\RuntimeException $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        header('Location: /books');
+        exit;
+    }
+
+    public function delete(int $id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /books');
+            exit;
+        }
+
+        try {
+            $bookModel = new BookModel();
+            $bookModel->deleteBook($id);
+
+            $_SESSION['success'] = "Livre supprimé avec succès";
+        } catch (\RuntimeException $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
+
+        header('Location: /books');
+        exit;
     }
 }

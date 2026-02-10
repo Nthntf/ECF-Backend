@@ -26,7 +26,11 @@ class AuthorController extends BaseController
             ];
         }
 
-        $this->render('author.html.twig', ['title' => 'Les auteurs', 'auteurs' => $auteurs, 'modal' => true]);
+        $this->render('author.html.twig', [
+            'title' => 'Les auteurs',
+            'auteurs' => $auteurs,
+            'modal' => true
+        ]);
     }
     public function add()
     {
@@ -45,8 +49,8 @@ class AuthorController extends BaseController
             exit;
         }
 
-        $nom        = trim($_POST['nom']);
-        $prenom     = trim($_POST['prenom']);
+        $nom = trim($_POST['nom']);
+        $prenom = trim($_POST['prenom']);
         $biographie = trim($_POST['biographie']);
 
         try {
