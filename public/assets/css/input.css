@@ -24,6 +24,10 @@
     @apply text-white bg-linear-to-r from-stone-300 via-stone-400 to-stone-500 hover:bg-linear-to-br font-medium text-sm px-2 py-1.5 rounded-2xl text-center leading-5;
 }
 
+.author-card > h2 {
+    @apply text-2xl font-semibold mt-1;
+}
+
 .bg-hex {
     background-color: #1a1a1a;
     background-image: url("../images/background.jpg");

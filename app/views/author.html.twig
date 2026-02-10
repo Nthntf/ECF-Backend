@@ -1,5 +1,27 @@
 {% extends "layout/layout.html.twig" %}
 
 {% block content %}
-	Page auteurs
+	<article class="rounded bg-stone-200 mx-auto w-fit py-5 px-10 my-5 max-w-8/10">
+		{% if role === 'admin' %}
+			<button type="button" class="add-btn open-modal" data-resource="authors" data-modal="add">
+				+ Ajouter un auteur
+			</button>
+		{% endif %}
+		{% for bio in biographies %}
+			<div class="author-card">{{bio.biographie|raw}}</div>
+			{% if role === 'admin' %}
+				<div class="flex flex-row gap-2">
+					<button class="update-btn open-modal" data-resource="categories" data-modal="update" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
+						Modifier
+					</button>
+					<form method="POST" action="/categorie/{{ categorie.id }}/delete">
+						<button type="button" class="delete-btn open-modal" data-resource="categories" data-modal="delete" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
+							Supprimer
+						</button>
+					</form>
+				</div>
+			{% endif %}
+			<hr class="my-2">
+		{% endfor %}
+	</article>
 {% endblock %}

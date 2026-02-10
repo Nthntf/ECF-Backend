@@ -5,7 +5,7 @@
 		<div class="flex justify-between items-center mb-4">
 			{% if role === 'admin' %}
 				<button type="button" class="add-btn open-modal" data-resource="categories" data-modal="add">
-					+ Ajouter une catégorie
+					+ Ajouter un auteur
 				</button>
 			{% endif %}
 
@@ -68,34 +68,36 @@
 			</tbody>
 		</table>
 	</article>
-	<!-- Modal Ajouter -->
-	<div id="modal-add" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
-		<form action="" method="POST" class="bg-white rounded p-6 w-96" id="addForm">
-			<input type="text" name="nom" class="border-2 border-gray-300 px-3 py-1 my-1 w-full" placeholder="Nom catégorie" required>
-			<div class="flex justify-end gap-2 mt-4">
-				<button type="button" class="cancel-btn close-modal">Annuler</button>
-				<button class="add-btn">Ajouter</button>
-			</div>
-		</form>
-	</div>
-	<!-- Modal Supprimer -->
-	<div id="modal-delete" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
-		<form action="" method="POST" class="bg-white rounded p-6 w-96" id="deleteForm">
-			<p class="delete-msg"></p>
-			<div class="flex justify-end gap-2 mt-4">
-				<button type="button" class="cancel-btn close-modal">Annuler</button>
-				<button class="delete-btn">Supprimer</button>
-			</div>
-		</form>
-	</div>
-	<!-- Modal Modifier -->
-	<div id="modal-update" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
-		<form action="" method="POST" class="bg-white rounded p-6 w-96" id="updateForm">
-			<input type="text" name="nom" id="updateNom" class="border-2 border-gray-300 px-3 py-1 my-1 w-full" required>
-			<div class="flex justify-end gap-2 mt-4">
-				<button type="button" class="cancel-btn close-modal">Annuler</button>
-				<button class="add-btn">Confirmer</button>
-			</div>
-		</form>
-	</div>
+	{% if role === 'admin' %}
+		<!-- Modal Ajouter -->
+		<div id="modal-add" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
+			<form action="" method="POST" class="bg-white rounded p-6 w-96" id="addForm">
+				<input type="text" name="nom" class="border-2 border-gray-300 px-3 py-1 my-1 w-full" placeholder="Nom catégorie" required>
+				<div class="flex justify-end gap-2 mt-4">
+					<button type="button" class="cancel-btn close-modal">Annuler</button>
+					<button class="add-btn">Ajouter</button>
+				</div>
+			</form>
+		</div>
+		<!-- Modal Supprimer -->
+		<div id="modal-delete" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
+			<form action="" method="POST" class="bg-white rounded p-6 w-96" id="deleteForm">
+				<p class="delete-msg"></p>
+				<div class="flex justify-end gap-2 mt-4">
+					<button type="button" class="cancel-btn close-modal">Annuler</button>
+					<button class="delete-btn">Supprimer</button>
+				</div>
+			</form>
+		</div>
+		<!-- Modal Modifier -->
+		<div id="modal-update" class="hidden modal fixed inset-0 bg-black/50 items-center justify-center">
+			<form action="" method="POST" class="bg-white rounded p-6 w-96" id="updateForm">
+				<input type="text" name="nom" id="updateNom" class="border-2 border-gray-300 px-3 py-1 my-1 w-full" required>
+				<div class="flex justify-end gap-2 mt-4">
+					<button type="button" class="cancel-btn close-modal">Annuler</button>
+					<button class="add-btn">Confirmer</button>
+				</div>
+			</form>
+		</div>
+	{% endif %}
 {% endblock %}

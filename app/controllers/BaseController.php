@@ -17,6 +17,7 @@ abstract class BaseController
         ]);
         $this->twig->addGlobal('username', isset($_SESSION['user']['username'])
             ? ucfirst($_SESSION['user']['username']) : null);
+        $this->twig->addGlobal('role', $_SESSION['user']['role']);
     }
 
     protected function render($template, $data = []): void
