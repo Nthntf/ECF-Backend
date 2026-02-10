@@ -2,17 +2,21 @@
 
 namespace App\Controllers;
 
-use App\controllers\BaseController;
-use App\models\CategorieModel;
-use PDOException;
+use App\Controllers\BaseController;
+use App\Models\CategorieModel;
 
 class CategorieController extends BaseController
 {
     public function index()
     {
-        $categorieModel = new CategorieModel;
+        $categorieModel = new CategorieModel();
         $categories = $categorieModel->getAllCategories();
-        $this->render('categorie.html.twig', ['title' => 'Les categories', 'categories' => $categories, 'modal' => true]);
+
+        $this->render('categorie.html.twig', [
+            'title'      => 'Les catégories',
+            'categories' => $categories,
+            'modal'      => true
+        ]);
     }
 
     public function add()
@@ -29,7 +33,6 @@ class CategorieController extends BaseController
         }
 
         $nom = trim($_POST['nom']);
-
 
         try {
             $categorieModel = new CategorieModel();
@@ -62,6 +65,8 @@ class CategorieController extends BaseController
         try {
             $categorieModel = new CategorieModel();
             $categorieModel->updateCategorie($id, $nom);
+
+            $_SESSION['success'] = "Catégorie modifiée avec succès";
         } catch (\RuntimeException $e) {
             $_SESSION['error'] = $e->getMessage();
         }
@@ -80,6 +85,8 @@ class CategorieController extends BaseController
         try {
             $categorieModel = new CategorieModel();
             $categorieModel->deleteCategorie($id);
+
+            $_SESSION['success'] = "Catégorie supprimée avec succès";
         } catch (\RuntimeException $e) {
             $_SESSION['error'] = $e->getMessage();
         }

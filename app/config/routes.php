@@ -8,11 +8,17 @@ $router->map('GET', '/logout', 'LoginController@logout', 'logout');
 $router->map('GET', '/home', 'HomeController@index', 'home');
 $router->map('GET', '/', 'HomeController@redirect', 'homePage');
 
-// Pages
+// ==== PAGES ====
 $router->map('GET', '/books', 'BookController@index', 'books');
-$router->map('GET', '/authors', 'AuthorController@index', 'authors');
 
+// Categories
 $router->map('GET', '/categories', 'CategorieController@index', 'categories');
 $router->map('POST', '/categories/add', 'CategorieController@add');
 $router->map('POST', '/categories/[i:id]/update', 'CategorieController@update');
 $router->map('POST', '/categories/[i:id]/delete', 'CategorieController@delete');
+
+// Auteurs
+$router->map('GET', '/authors', 'AuthorController@index', 'authors');
+$router->map('POST', '/authors/add', 'AuthorController@add');
+$router->map('POST', '/authors/[i:id]/update', 'AuthorController@update');
+$router->map('POST', '/authors/[i:id]/delete', 'AuthorController@delete');
