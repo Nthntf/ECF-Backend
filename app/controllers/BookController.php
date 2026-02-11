@@ -83,8 +83,8 @@ class BookController extends BaseController
         $annee_publication = (int) $_POST['annee_publication'];
         $isbn = trim($_POST['isbn']);
         $synopsis = trim($_POST['synopsis']);
-        $disponible = isset($_POST['disponible']);
-        $like = isset($_POST['like']);
+        $disponible = (int) $_POST['disponible'];
+        $like = (int) $_POST['like'];
 
         try {
             $bookModel = new BookModel();
@@ -134,8 +134,8 @@ class BookController extends BaseController
         $annee_publication = (int) $_POST['annee_publication'];
         $isbn = trim($_POST['isbn']);
         $synopsis = trim($_POST['synopsis']);
-        $disponible = isset($_POST['disponible']);
-        $like = isset($_POST['like']);
+        $disponible = (int) $_POST['disponible'];
+        $like = (int) $_POST['like'];
 
         try {
             $bookModel = new BookModel();
@@ -177,6 +177,43 @@ class BookController extends BaseController
         }
 
         header('Location: /books');
+        exit;
+    }
+
+    public function toggleLike(int $id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+
+        try {
+            $bookModel = new BookModel();
+            $newLike = $bookModel->toggleLike($id);
+
+            if ($newLike === null) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Livre introuvable'
+                ]);
+                return;
+            }
+
+            echo json_encode([
+                'success' => true,
+                'liked' => $newLike
+            ]);
+        } catch (\RuntimeException $e) {
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+
         exit;
     }
 }

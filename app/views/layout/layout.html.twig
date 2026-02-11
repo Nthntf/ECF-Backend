@@ -1,38 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 	<head>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<link rel="stylesheet" href="/assets/css/output.css"/>
+
 		{% if modal %}
 			<script src="/assets/js/jquery.min.js"></script>
+			<script src="/assets/js/apiLike.js"></script>
 			<script src="/assets/js/modal.js"></script>
 		{% endif %}
 
 		<title>{{ title }}</title>
 	</head>
-	<body class="bg-stone-700">
-		<header>
-			<nav class="relative flex justify-center bg-black">
-				<p class="absolute left-4 px-2.5 py-4.5 text-2xl flex text-white">
-					<img class="w-7.5" src="assets/images/user.png" alt="user"/>
-					{% if username %}
-						{{username}}
-					{% else %}
-						Invité
-					{% endif %}
-				</p>
-				<div class="flex">
-					<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/home">Accueil</a>
-					<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/books">Livres</a>
-					<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/authors">Auteurs</a>
-					<a class="px-2.5 py-4.5 text-2xl cool-btn" href="/categories">Catégories</a>
+
+	<body class="bg-stone-700 min-h-screen flex flex-col">
+
+		<header class="bg-linear-to-r from-stone-900 via-stone-800 to-stone-900 shadow-lg border-b border-stone-700">
+			<nav class="relative max-w-7xl mx-auto flex items-center justify-center px-6">
+
+				<div class="absolute left-4 flex items-center gap-2 text-stone-200 text-lg">
+					<img class="w-8 h-8 rounded-full border border-stone-600" src="/assets/images/user.png" alt="user"/>
+					<span class="font-medium">
+						{% if username %}
+							{{ username }}
+						{% else %}
+							Invité
+						{% endif %}
+					</span>
 				</div>
-				<a class="absolute right-0 px-2.5 py-4.5 text-2xl cool-btn" href="/logout">Déconnexion</a>
+
+				<div class="flex gap-2">
+					<a class="px-4 py-5 text-xl cool-btn hover:bg-stone-700/50 rounded-xl transition" href="/home">
+						Accueil
+					</a>
+					<a class="px-4 py-5 text-xl cool-btn hover:bg-stone-700/50 rounded-xl transition" href="/books">
+						Livres
+					</a>
+					<a class="px-4 py-5 text-xl cool-btn hover:bg-stone-700/50 rounded-xl transition" href="/authors">
+						Auteurs
+					</a>
+					<a class="px-4 py-5 text-xl cool-btn hover:bg-stone-700/50 rounded-xl transition" href="/categories">
+						Catégories
+					</a>
+				</div>
+
+				<a class="absolute right-4 px-4 py-2 text-lg rounded-xl text-red-400 hover:text-white hover:bg-red-500/20 transition" href="/logout">
+					Déconnexion
+				</a>
+
 			</nav>
 		</header>
-		<main>
-			{% block content %}{% endblock %}
-		</main>
-	</body>
-</html>
+
+		<main class="flex-1 px-4"> {% block content %}{% endblock %}
+			</main>
+
+			<footer class="text-center text-stone-300 text-sm py-4">
+				©
+				{{ "now"|date("Y") }}
+				- La Big Bibliothèque
+			</footer>
+
+		</body>
+	</html>

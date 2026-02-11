@@ -26,3 +26,4 @@ $router->map('GET', '/books', 'BookController@index', 'books');
 $router->map('POST', '/books/add', 'BookController@add');
 $router->map('POST', '/books/[i:id]/update', 'BookController@update');
 $router->map('POST', '/books/[i:id]/delete', 'BookController@delete');
+$router->map('POST', '/books/[i:id]/like', 'BookController@toggleLike');

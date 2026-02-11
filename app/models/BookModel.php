@@ -140,4 +140,35 @@ class BookModel
             throw new RuntimeException("Erreur lors de la suppression du livre");
         }
     }
+
+    public function toggleLike(int $id): ?bool
+    {
+        try {
+            $query = $this->db->prepare(
+                'SELECT `like` FROM livres WHERE id = :id'
+            );
+            $query->execute([':id' => $id]);
+            $book = $query->fetch(PDO::FETCH_ASSOC);
+
+            if (!$book) {
+                return null;
+            }
+
+            $newLike = $book['like'] ? 0 : 1;
+
+            $update = $this->db->prepare(
+                'UPDATE livres SET `like` = :like WHERE id = :id'
+            );
+
+            $update->execute([
+                ':like' => $newLike,
+                ':id' => $id
+            ]);
+
+            return (bool) $newLike;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors du changement de like");
+        }
+    }
 }

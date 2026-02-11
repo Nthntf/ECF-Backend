@@ -1,72 +1,81 @@
 {% extends "layout/layout.html.twig" %}
 
 {% block content %}
-	<article class="rounded bg-stone-200 mx-auto w-fit py-5 px-10 my-5">
-		<div class="flex justify-between items-center mb-4">
-			{% if role === 'admin' %}
-				<button type="button" class="add-btn open-modal" data-resource="categories" data-modal="add">
-					+ Ajouter une catégorie
-				</button>
-			{% endif %}
+	<article class="bg-white rounded-2xl shadow-lg mx-auto max-w-4xl my-8 p-6">
+		<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+			<h1 class="text-2xl font-bold text-stone-700">
+				Catégories
+			</h1>
 
-			<form method="GET" action="" class="flex items-center gap-2">
-				<label for="sort" class="text-sm text-stone-700">
-					Trier par :
-				</label>
-				<select name="sort" id="sort" class="rounded border-stone-300 text-sm focus:ring-emerald-500 focus:border-emerald-500" onchange="this.form.submit()">
-					<option value="id_asc">ID ↑</option>
-					<option value="id_desc">ID ↓</option>
-					<option value="name_asc">Nom A-Z</option>
-					<option value="name_desc">Nom Z-A</option>
-				</select>
-			</form>
+			<div class="flex items-center gap-3">
+				{% if role === 'admin' %}
+					<button type="button" class="add-btn open-modal" data-resource="categories" data-modal="add">
+						+ Ajouter
+					</button>
+				{% endif %}
+
+				<form method="GET" class="flex items-center gap-2">
+					<label for="sort" class="text-sm text-stone-600">
+						Trier :
+					</label>
+					<select name="sort" id="sort" class="rounded-xl border-stone-300 text-sm px-3 py-1 focus:ring-emerald-500 focus:border-emerald-500" onchange="this.form.submit()">
+						<option value="id_asc">ID ↑</option>
+						<option value="id_desc">ID ↓</option>
+						<option value="name_asc">Nom A-Z</option>
+						<option value="name_desc">Nom Z-A</option>
+					</select>
+				</form>
+			</div>
 		</div>
 
-		<table class="table-auto border-collapse">
-			<thead>
-				<tr class="border-b border-stone-400">
-					<th class="px-6 py-3 text-left">ID</th>
-					<th class="px-6 py-3 text-left">Nom</th>
-					{% if role === 'admin' %}
-						<th class="px-6 py-3 text-center">Modifier</th>
-						<th class="px-6 py-3 text-center">Supprimer</th>
-					{% endif %}
-
-				</tr>
-			</thead>
-
-			<tbody>
-				{% for categorie in categories %}
-					<tr class="border-b border-stone-300">
-						<td class="px-6 py-3">{{ categorie.id }}</td>
-						<td class="px-6 py-3">{{ categorie.nom }}</td>
+		<div class="overflow-hidden rounded-xl border border-stone-200">
+			<table class="min-w-full text-sm">
+				<thead class="bg-stone-100 text-stone-700">
+					<tr>
+						<th class="px-6 py-3 text-left font-semibold">ID</th>
+						<th class="px-6 py-3 text-left font-semibold">Nom</th>
 
 						{% if role === 'admin' %}
-							<td class="px-6 py-3 text-center">
-								<button class="update-btn open-modal" data-resource="categories" data-modal="update" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
-									Modifier
-								</button>
+							<th class="px-6 py-3 text-center font-semibold">Modifier</th>
+							<th class="px-6 py-3 text-center font-semibold">Supprimer</th>
+						{% endif %}
+					</tr>
+				</thead>
+
+				<tbody class="divide-y divide-stone-200">
+					{% for categorie in categories %}
+						<tr class="hover:bg-stone-50 transition">
+							<td class="px-6 py-2.5 font-medium text-stone-700">
+								{{ categorie.id }}
+							</td>
+							<td class="px-6 py-2.5">
+								{{ categorie.nom }}
 							</td>
 
-							<td class="px-6 py-3 text-center">
-								<form method="POST" action="/categorie/{{ categorie.id }}/delete">
+							{% if role === 'admin' %}
+								<td class="px-6 py-2.5 text-center">
+									<button class="update-btn open-modal" data-resource="categories" data-modal="update" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
+										Modifier
+									</button>
+								</td>
+
+								<td class="px-6 py-2.5 text-center">
 									<button type="button" class="delete-btn open-modal" data-resource="categories" data-modal="delete" data-id="{{ categorie.id }}" data-nom="{{ categorie.nom }}">
 										Supprimer
 									</button>
-								</form>
+								</td>
+							{% endif %}
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4" class="px-6 py-6 text-center text-stone-500">
+								Aucune catégorie trouvée
 							</td>
-						{% endif %}
-
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="4" class="px-6 py-3 text-center">
-							Aucune catégorie trouvée
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</article>
 	{% if role === 'admin' %}
 		<!-- Modal Ajouter -->
