@@ -17,12 +17,14 @@ $router->map('POST', '/categories/[i:id]/delete', 'CategorieController@delete');
 
 // Auteurs
 $router->map('GET', '/authors', 'AuthorController@index', 'authors');
+$router->map('GET', '/authors/[i:id]', 'AuthorController@show');
 $router->map('POST', '/authors/add', 'AuthorController@add');
 $router->map('POST', '/authors/[i:id]/update', 'AuthorController@update');
 $router->map('POST', '/authors/[i:id]/delete', 'AuthorController@delete');
 
 // Livres
 $router->map('GET', '/books', 'BookController@index', 'books');
+$router->map('GET', '/books/[i:id]', 'BookController@show');
 $router->map('POST', '/books/add', 'BookController@add');
 $router->map('POST', '/books/[i:id]/update', 'BookController@update');
 $router->map('POST', '/books/[i:id]/delete', 'BookController@delete');

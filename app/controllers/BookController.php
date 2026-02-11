@@ -216,4 +216,44 @@ class BookController extends BaseController
 
         exit;
     }
+
+    public function show(int $id)
+    {
+        $bookModel = new BookModel();
+        $book = $bookModel->getBookById($id);
+
+        if (!$book) {
+            http_response_code(404);
+            echo "Livre introuvable";
+            exit;
+        }
+
+        $parsedown = new Parsedown();
+
+        $livre = [
+            'id' => $book['id'],
+            'titre' => $book['titre'],
+            'annee_publication' => $book['annee_publication'],
+            'isbn' => $book['isbn'],
+            'disponible' => $book['disponible'],
+            'synopsis' => $parsedown->text($book['synopsis']),
+            'is_liked' => $book['is_liked'],
+
+            'auteur' => [
+                'id' => $book['auteur_id'],
+                'nom' => $book['auteur_nom'],
+                'prenom' => $book['auteur_prenom']
+            ],
+
+            'categorie' => [
+                'id' => $book['categorie_id'],
+                'nom' => $book['categorie_nom']
+            ]
+        ];
+
+        $this->render('book_show.html.twig', [
+            'title' => $livre['titre'],
+            'book' => $livre
+        ]);
+    }
 }

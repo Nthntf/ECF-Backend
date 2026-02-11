@@ -25,7 +25,7 @@ if (!$match) {
 }
 
 // Route protégées par login
-$protectedRoutes = ['home', 'livres', 'auteurs', 'categories'];
+$protectedRoutes = ['home', 'books', 'authors', 'categories'];
 $guestRoutes     = ['login'];
 
 // Middleware

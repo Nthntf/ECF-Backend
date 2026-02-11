@@ -119,4 +119,30 @@ class AuthorController extends BaseController
         header('Location: /authors');
         exit;
     }
+
+    public function show(int $id)
+    {
+        $authorModel = new AuthorModel();
+        $author = $authorModel->getAuthorById($id);
+
+        if (!$author) {
+            http_response_code(404);
+            echo "Auteur introuvable";
+            exit;
+        }
+
+        $parsedown = new Parsedown();
+
+        $auteur = [
+            'id' => $author['id'],
+            'prenom' => $author['prenom'],
+            'nom' => $author['nom'],
+            'biographie' => $parsedown->text($author['biographie'])
+        ];
+
+        $this->render('author_show.html.twig', [
+            'title' => $auteur['prenom'] . ' ' . $auteur['nom'],
+            'auteur' => $auteur
+        ]);
+    }
 }

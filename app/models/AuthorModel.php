@@ -32,6 +32,25 @@ class AuthorModel
         return $auteursData;
     }
 
+    public function getAuthorById(int $id): ?array
+    {
+        try {
+            $query = $this->db->prepare(
+                'SELECT id, nom, prenom, biographie 
+             FROM auteurs 
+             WHERE id = :id'
+            );
+
+            $query->execute([':id' => $id]);
+            $author = $query->fetch(PDO::FETCH_ASSOC);
+
+            return $author ?: null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors de la récupération de l'auteur");
+        }
+    }
+
     public function addAuthor(string $nom, string $prenom, string $biographie): bool
     {
         try {

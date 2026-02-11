@@ -17,9 +17,7 @@
 
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 			{% for author in auteurs %}
-				<div class="bg-stone-50 rounded-2xl border border-stone-200 shadow-sm
-																	   hover:shadow-md transition p-6 flex flex-col">
-
+				<div class="bg-stone-50 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition p-6 flex flex-col">
 					{% if role === 'admin' %}
 						<div class="flex justify-end gap-2 mb-3">
 							<button class="update-btn open-modal" data-resource="authors" data-modal="update" data-id="{{ author.id }}" data-prenom="{{ author.prenom }}" data-nom="{{ author.nom }}" data-biographie="{{ author.biographie|e('html_attr') }}">
@@ -32,10 +30,10 @@
 						</div>
 					{% endif %}
 
-					<h2 class="text-xl font-semibold text-stone-800 mb-3">
+					<a href="/authors/{{ author.id }}" class="text-xl font-semibold text-stone-800 mb-3 hover:cursor-pointer hover:underline">
 						{{ author.prenom }}
 						{{ author.nom }}
-					</h2>
+					</a>
 
 					<div class="text-sm text-stone-600 leading-relaxed overflow-y-auto max-h-40 pr-1">
 						{{ author.biographie|raw }}
