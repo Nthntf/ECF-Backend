@@ -247,6 +247,15 @@
   .my-2 {
     margin-block: calc(var(--spacing) * 2);
   }
+  .my-5 {
+    margin-block: calc(var(--spacing) * 5);
+  }
+  .my-6 {
+    margin-block: calc(var(--spacing) * 6);
+  }
+  .my-7 {
+    margin-block: calc(var(--spacing) * 7);
+  }
   .my-8 {
     margin-block: calc(var(--spacing) * 8);
   }
@@ -255,6 +264,9 @@
   }
   .mt-6 {
     margin-top: calc(var(--spacing) * 6);
+  }
+  .mt-8 {
+    margin-top: calc(var(--spacing) * 8);
   }
   .mt-32 {
     margin-top: calc(var(--spacing) * 32);
@@ -333,6 +345,9 @@
   }
   .w-96 {
     width: calc(var(--spacing) * 96);
+  }
+  .w-150 {
+    width: calc(var(--spacing) * 150);
   }
   .w-full {
     width: 100%;
@@ -738,6 +753,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-stone-50);
+      }
+    }
+  }
+  .hover\:bg-stone-300 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-stone-300);
       }
     }
   }

@@ -106,4 +106,37 @@ class AuthorModel
             throw new RuntimeException("Erreur lors de la suppression de l'auteur");
         }
     }
+
+    public function countAuthors(): int
+    {
+        try {
+            $query = $this->db->query('SELECT COUNT(*) FROM auteurs');
+            return (int) $query->fetchColumn();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors du comptage des auteurs");
+        }
+    }
+
+
+    public function getAuthorsPaginated(int $limit, int $offset): array
+    {
+        try {
+            $query = $this->db->prepare(
+                'SELECT id, nom, prenom, biographie
+             FROM auteurs
+             ORDER BY id ASC
+             LIMIT :limit OFFSET :offset'
+            );
+
+            $query->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $query->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $query->execute();
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors de la récupération paginée des auteurs");
+        }
+    }
 }

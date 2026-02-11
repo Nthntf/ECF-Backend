@@ -207,4 +207,53 @@ class BookModel
             throw new RuntimeException("Erreur lors de la récupération du livre");
         }
     }
+
+    public function countBooks(): int
+    {
+        try {
+            $query = $this->db->query('SELECT COUNT(*) FROM livres');
+            return (int) $query->fetchColumn();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors du comptage des livres");
+        }
+    }
+
+    public function getBooksPaginated(int $limit, int $offset): array
+    {
+        try {
+            $query = $this->db->prepare(
+                'SELECT 
+                l.id,
+                l.titre,
+                l.annee_publication,
+                l.isbn,
+                l.disponible,
+                l.synopsis,
+                l.`like` AS is_liked,
+
+                a.id AS auteur_id,
+                a.nom AS auteur_nom,
+                a.prenom AS auteur_prenom,
+
+                c.id AS categorie_id,
+                c.nom AS categorie_nom
+
+            FROM livres l
+            INNER JOIN auteurs a ON l.auteur_id = a.id
+            INNER JOIN categories c ON l.categorie_id = c.id
+            ORDER BY l.titre ASC
+            LIMIT :limit OFFSET :offset'
+            );
+
+            $query->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $query->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $query->execute();
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new RuntimeException("Erreur lors de la récupération paginée des livres");
+        }
+    }
 }

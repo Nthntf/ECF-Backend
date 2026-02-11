@@ -6,7 +6,7 @@ use App\controllers\BaseController;
 use App\models\BookModel;
 use App\models\AuthorModel;
 use App\models\CategorieModel;
-
+use JasonGrimes\Paginator;
 use Parsedown;
 
 class BookController extends BaseController
@@ -19,10 +19,29 @@ class BookController extends BaseController
 
         $auteurs = $authorModel->getAllAuthors();
         $categories = $categoryModel->getAllCategories();
-        $books = $bookModel->getAllBooks();
 
+        $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        $itemsPerPage = $_ENV['BOOKS_PER_PAGE'];
 
-        $parsedown = new Parsedown();
+        $totalItems = $bookModel->countBooks();
+
+        $urlPattern = '/books?page=(:num)';
+        $paginator = new Paginator(
+            $totalItems,
+            $itemsPerPage,
+            $currentPage,
+            $urlPattern
+        );
+
+        if ($currentPage > $paginator->getNumPages() && $paginator->getNumPages() > 0) {
+            header('Location: /books');
+            exit;
+        }
+
+        $offset = ($currentPage - 1) * $itemsPerPage;
+        $books = $bookModel->getBooksPaginated($itemsPerPage, $offset);
+
+        $parsedown = new \Parsedown();
         $livres = [];
 
         foreach ($books as $book) {
@@ -53,7 +72,8 @@ class BookController extends BaseController
             'livres' => $livres,
             'auteurs' => $auteurs,
             'categories' => $categories,
-            'modal' => true
+            'modal' => true,
+            'paginator' => $paginator
         ]);
     }
 

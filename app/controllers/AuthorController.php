@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\controllers\BaseController;
 use App\models\AuthorModel;
+use JasonGrimes\Paginator;
 use Parsedown;
 
 class AuthorController extends BaseController
@@ -11,10 +12,29 @@ class AuthorController extends BaseController
     public function index()
     {
         $authorModel = new AuthorModel();
-        $authors = $authorModel->getAllAuthors();
+
+        $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        $itemsPerPage = $_ENV['AUTHORS_PER_PAGE'];
+
+        $totalItems = $authorModel->countAuthors();
+
+        $urlPattern = '/authors?page=(:num)';
+        $paginator = new Paginator(
+            $totalItems,
+            $itemsPerPage,
+            $currentPage,
+            $urlPattern
+        );
+
+        if ($currentPage > $paginator->getNumPages() && $paginator->getNumPages() > 0) {
+            header('Location: /authors');
+            exit;
+        }
+
+        $offset = ($currentPage - 1) * $itemsPerPage;
+        $authors = $authorModel->getAuthorsPaginated($itemsPerPage, $offset);
 
         $parsedown = new Parsedown();
-
         $auteurs = [];
 
         foreach ($authors as $author) {
@@ -29,9 +49,11 @@ class AuthorController extends BaseController
         $this->render('author.html.twig', [
             'title' => 'Les auteurs',
             'auteurs' => $auteurs,
-            'modal' => true
+            'modal' => true,
+            'paginator' => $paginator
         ]);
     }
+
     public function add()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

@@ -20,7 +20,7 @@ class CategorieModel
     {
         try {
             $query = $this->db->prepare(
-                'SELECT id, nom FROM categories'
+                'SELECT id, nom FROM categories ORDER BY id ASC'
             );
             $query->execute();
             $categoriesData = $query->fetchAll(PDO::FETCH_ASSOC);
