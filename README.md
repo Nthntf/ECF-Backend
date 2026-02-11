@@ -65,6 +65,10 @@ AUTHORS_PER_PAGE=6
 ```
 
 ```bash
+composer install
+```
+
+```bash
 php -S localhost:8000 -t public
 ```
 
