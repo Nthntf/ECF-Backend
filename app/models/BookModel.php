@@ -208,52 +208,93 @@ class BookModel
         }
     }
 
-    public function countBooks(): int
+    public function countBooks(?string $search = null): int
     {
         try {
-            $query = $this->db->query('SELECT COUNT(*) FROM livres');
+            $sql = 'SELECT COUNT(*) 
+                FROM livres l
+                INNER JOIN auteurs a ON l.auteur_id = a.id
+                INNER JOIN categories c ON l.categorie_id = c.id';
+
+            if ($search !== null && $search !== '') {
+                $sql .= ' WHERE (
+                        l.titre LIKE :search1
+                        OR a.nom LIKE :search2
+                        OR a.prenom LIKE :search3
+                        OR c.nom LIKE :search4
+                      )';
+            }
+
+            $query = $this->db->prepare($sql);
+
+            if ($search !== null && $search !== '') {
+                $value = '%' . $search . '%';
+                $query->bindValue(':search1', $value);
+                $query->bindValue(':search2', $value);
+                $query->bindValue(':search3', $value);
+                $query->bindValue(':search4', $value);
+            }
+
+            $query->execute();
             return (int) $query->fetchColumn();
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            throw new RuntimeException("Erreur lors du comptage des livres");
+            die($e->getMessage());
         }
     }
 
-    public function getBooksPaginated(int $limit, int $offset): array
+    public function getBooksPaginated(int $limit, int $offset, ?string $search = null): array
     {
         try {
-            $query = $this->db->prepare(
-                'SELECT 
-                l.id,
-                l.titre,
-                l.annee_publication,
-                l.isbn,
-                l.disponible,
-                l.synopsis,
-                l.`like` AS is_liked,
+            $sql = 'SELECT 
+                    l.id,
+                    l.titre,
+                    l.annee_publication,
+                    l.isbn,
+                    l.disponible,
+                    l.synopsis,
+                    l.`like` AS is_liked,
 
-                a.id AS auteur_id,
-                a.nom AS auteur_nom,
-                a.prenom AS auteur_prenom,
+                    a.id AS auteur_id,
+                    a.nom AS auteur_nom,
+                    a.prenom AS auteur_prenom,
 
-                c.id AS categorie_id,
-                c.nom AS categorie_nom
+                    c.id AS categorie_id,
+                    c.nom AS categorie_nom
 
-            FROM livres l
-            INNER JOIN auteurs a ON l.auteur_id = a.id
-            INNER JOIN categories c ON l.categorie_id = c.id
-            ORDER BY l.titre ASC
-            LIMIT :limit OFFSET :offset'
-            );
+                FROM livres l
+                INNER JOIN auteurs a ON l.auteur_id = a.id
+                INNER JOIN categories c ON l.categorie_id = c.id';
+
+            if ($search !== null && $search !== '') {
+                $sql .= ' WHERE (
+                        l.titre LIKE :search1
+                        OR a.nom LIKE :search2
+                        OR a.prenom LIKE :search3
+                        OR c.nom LIKE :search4
+                      )';
+            }
+
+            $sql .= ' ORDER BY l.titre ASC
+                  LIMIT :limit OFFSET :offset';
+
+            $query = $this->db->prepare($sql);
+
+            if ($search !== null && $search !== '') {
+                $value = '%' . $search . '%';
+                $query->bindValue(':search1', $value, PDO::PARAM_STR);
+                $query->bindValue(':search2', $value, PDO::PARAM_STR);
+                $query->bindValue(':search3', $value, PDO::PARAM_STR);
+                $query->bindValue(':search4', $value, PDO::PARAM_STR);
+            }
 
             $query->bindValue(':limit', $limit, PDO::PARAM_INT);
             $query->bindValue(':offset', $offset, PDO::PARAM_INT);
+
             $query->execute();
 
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            throw new RuntimeException("Erreur lors de la récupération paginée des livres");
+            die($e->getMessage());
         }
     }
 }

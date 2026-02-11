@@ -13,12 +13,19 @@ class AuthorController extends BaseController
     {
         $authorModel = new AuthorModel();
 
+        $search = isset($_GET['search']) && trim($_GET['search']) !== ''
+            ? trim($_GET['search'])
+            : null;
+
         $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
         $itemsPerPage = $_ENV['AUTHORS_PER_PAGE'];
 
-        $totalItems = $authorModel->countAuthors();
+        $totalItems = $authorModel->countAuthors($search);
 
-        $urlPattern = '/authors?page=(:num)';
+        $urlPattern = $search
+            ? '/authors?search=' . urlencode($search) . '&page=(:num)'
+            : '/authors?page=(:num)';
+
         $paginator = new Paginator(
             $totalItems,
             $itemsPerPage,
@@ -32,7 +39,12 @@ class AuthorController extends BaseController
         }
 
         $offset = ($currentPage - 1) * $itemsPerPage;
-        $authors = $authorModel->getAuthorsPaginated($itemsPerPage, $offset);
+
+        $authors = $authorModel->getAuthorsPaginated(
+            $itemsPerPage,
+            $offset,
+            $search
+        );
 
         $parsedown = new Parsedown();
         $auteurs = [];
@@ -50,7 +62,8 @@ class AuthorController extends BaseController
             'title' => 'Les auteurs',
             'auteurs' => $auteurs,
             'modal' => true,
-            'paginator' => $paginator
+            'paginator' => $paginator,
+            'search' => $search
         ]);
     }
 

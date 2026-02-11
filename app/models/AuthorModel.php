@@ -107,36 +107,65 @@ class AuthorModel
         }
     }
 
-    public function countAuthors(): int
+    public function countAuthors(?string $search = null): int
     {
         try {
-            $query = $this->db->query('SELECT COUNT(*) FROM auteurs');
+            $sql = 'SELECT COUNT(*) FROM auteurs';
+
+            if ($search !== null && $search !== '') {
+                $sql .= ' WHERE (
+                        nom LIKE :search1
+                        OR prenom LIKE :search2
+                      )';
+            }
+
+            $query = $this->db->prepare($sql);
+
+            if ($search !== null && $search !== '') {
+                $value = '%' . $search . '%';
+                $query->bindValue(':search1', $value, PDO::PARAM_STR);
+                $query->bindValue(':search2', $value, PDO::PARAM_STR);
+            }
+
+            $query->execute();
             return (int) $query->fetchColumn();
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            throw new RuntimeException("Erreur lors du comptage des auteurs");
+            die($e->getMessage());
         }
     }
 
 
-    public function getAuthorsPaginated(int $limit, int $offset): array
+    public function getAuthorsPaginated(int $limit, int $offset, ?string $search = null): array
     {
         try {
-            $query = $this->db->prepare(
-                'SELECT id, nom, prenom, biographie
-             FROM auteurs
-             ORDER BY id ASC
-             LIMIT :limit OFFSET :offset'
-            );
+            $sql = 'SELECT id, nom, prenom, biographie
+                FROM auteurs';
+
+            if ($search !== null && $search !== '') {
+                $sql .= ' WHERE (
+                        nom LIKE :search1
+                        OR prenom LIKE :search2
+                      )';
+            }
+
+            $sql .= ' ORDER BY nom ASC
+                  LIMIT :limit OFFSET :offset';
+
+            $query = $this->db->prepare($sql);
+
+            if ($search !== null && $search !== '') {
+                $value = '%' . $search . '%';
+                $query->bindValue(':search1', $value, PDO::PARAM_STR);
+                $query->bindValue(':search2', $value, PDO::PARAM_STR);
+            }
 
             $query->bindValue(':limit', $limit, PDO::PARAM_INT);
             $query->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $query->execute();
 
+            $query->execute();
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log($e->getMessage());
-            throw new RuntimeException("Erreur lors de la récupération paginée des auteurs");
+            die($e->getMessage());
         }
     }
 }

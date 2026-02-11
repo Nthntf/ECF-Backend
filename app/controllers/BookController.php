@@ -20,12 +20,21 @@ class BookController extends BaseController
         $auteurs = $authorModel->getAllAuthors();
         $categories = $categoryModel->getAllCategories();
 
+        $search = isset($_GET['search']) && trim($_GET['search']) !== ''
+            ? trim($_GET['search'])
+            : null;
+
         $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
         $itemsPerPage = $_ENV['BOOKS_PER_PAGE'];
 
-        $totalItems = $bookModel->countBooks();
+        $totalItems = $bookModel->countBooks($search);
 
-        $urlPattern = '/books?page=(:num)';
+        if ($search) {
+            $urlPattern = '/books?search=' . urlencode($search) . '&page=(:num)';
+        } else {
+            $urlPattern = '/books?page=(:num)';
+        }
+
         $paginator = new Paginator(
             $totalItems,
             $itemsPerPage,
@@ -39,9 +48,14 @@ class BookController extends BaseController
         }
 
         $offset = ($currentPage - 1) * $itemsPerPage;
-        $books = $bookModel->getBooksPaginated($itemsPerPage, $offset);
 
-        $parsedown = new \Parsedown();
+        $books = $bookModel->getBooksPaginated(
+            $itemsPerPage,
+            $offset,
+            $search
+        );
+
+        $parsedown = new Parsedown();
         $livres = [];
 
         foreach ($books as $book) {
@@ -73,7 +87,8 @@ class BookController extends BaseController
             'auteurs' => $auteurs,
             'categories' => $categories,
             'modal' => true,
-            'paginator' => $paginator
+            'paginator' => $paginator,
+            'search' => $search
         ]);
     }
 
