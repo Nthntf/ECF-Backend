@@ -12,6 +12,7 @@ class Database
 
     private function __construct()
     {
+        // Récupération des paramètres de connexion depuis les variables d'environnement
         $host = $_ENV['DB_HOST'];
         $db   = $_ENV['DB_DATABASE'];
         $user = $_ENV['DB_USERNAME'];
@@ -26,6 +27,7 @@ class Database
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
 
+        // Connexion à la base de données avec PDO
         try {
             $this->pdo = new PDO($dsn, $user, $pass, $options);
         } catch (PDOException $e) {
@@ -33,6 +35,7 @@ class Database
         }
     }
 
+    // Retourne l'instance PDO
     public static function getInstance()
     {
         if (self::$instance === null) {

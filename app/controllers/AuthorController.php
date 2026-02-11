@@ -13,15 +13,19 @@ class AuthorController extends BaseController
     {
         $authorModel = new AuthorModel();
 
+        // Récupère le terme de recherche s'il existe
         $search = isset($_GET['search']) && trim($_GET['search']) !== ''
             ? trim($_GET['search'])
             : null;
 
+        // Gestion de la pagination
         $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
         $itemsPerPage = $_ENV['AUTHORS_PER_PAGE'];
 
+        // Nombre total d'auteurs (avec ou sans recherche)
         $totalItems = $authorModel->countAuthors($search);
 
+        // Génère l'URL du paginator en conservant la recherche
         $urlPattern = $search
             ? '/authors?search=' . urlencode($search) . '&page=(:num)'
             : '/authors?page=(:num)';
@@ -33,6 +37,7 @@ class AuthorController extends BaseController
             $urlPattern
         );
 
+        // Redirige si la page demandée dépasse le nombre total
         if ($currentPage > $paginator->getNumPages() && $paginator->getNumPages() > 0) {
             header('Location: /authors');
             exit;
@@ -40,6 +45,7 @@ class AuthorController extends BaseController
 
         $offset = ($currentPage - 1) * $itemsPerPage;
 
+        // Récupère les auteurs paginés
         $authors = $authorModel->getAuthorsPaginated(
             $itemsPerPage,
             $offset,
@@ -49,6 +55,7 @@ class AuthorController extends BaseController
         $parsedown = new Parsedown();
         $auteurs = [];
 
+        // Convertit la biographie Markdown en HTML
         foreach ($authors as $author) {
             $auteurs[] = [
                 'id' => $author['id'],
@@ -69,11 +76,13 @@ class AuthorController extends BaseController
 
     public function add()
     {
+        // Sécurise l'accès uniquement en POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /authors');
             exit;
         }
 
+        // Vérifie que tous les champs sont remplis
         if (
             empty($_POST['nom']) ||
             empty($_POST['prenom']) ||
@@ -160,6 +169,7 @@ class AuthorController extends BaseController
         $authorModel = new AuthorModel();
         $author = $authorModel->getAuthorById($id);
 
+        // Retourne une 404 si l'auteur n'existe pas
         if (!$author) {
             http_response_code(404);
             echo "Auteur introuvable";
@@ -168,6 +178,7 @@ class AuthorController extends BaseController
 
         $parsedown = new Parsedown();
 
+        // Conversion Markdown → HTML
         $auteur = [
             'id' => $author['id'],
             'prenom' => $author['prenom'],

@@ -1,50 +1,53 @@
 $(function () {
+    // Ouvre une modal spécifique et cache les autres
     function openModal($modal) {
         $(".modal").removeClass("flex").addClass("hidden");
         $modal.removeClass("hidden").addClass("flex");
     }
 
+    // Ferme une modal spécifique
     function closeModal($modal) {
         $modal.removeClass("flex").addClass("hidden");
     }
 
+    // Récupère la ressource (nom de la page via data-set) associée à un bouton
     function getResource($input) {
         return $input.data("resource");
     }
 
+    // Récupère l'ID associé à un bouton
     function getId($input) {
         return $input.data("id");
     }
 
+    // Gestion du clic sur les boutons d'ouverture de modal
     $(".open-modal").on("click", function () {
         const $btn = $(this);
         const modalType = $btn.data("modal");
         const resource = getResource($btn);
         const id = getId($btn);
 
-        // ===== ADD =====
+        // ===== AJOUT =====
         if (modalType === "add") {
-            $("#addForm").attr("action", "/" + resource + "/add");
+            $("#addForm").attr("action", "/" + resource + "/add"); // Définit l'action du formulaire
             openModal($("#modal-add"));
         }
 
-        // ===== UPDATE =====
+        // ===== MODIFICATION =====
         if (modalType === "update") {
             $("#updateForm").attr("action", "/" + resource + "/" + id + "/update");
 
-            // ===== CATEGORIES =====
+            // Remplissage des champs selon la ressource
             if (resource === "categories") {
                 $("#updateNom").val($btn.data("nom"));
             }
 
-            // ===== AUTHORS =====
             if (resource === "authors") {
                 $("#updatePrenom").val($btn.data("prenom"));
                 $("#updateNom").val($btn.data("nom"));
                 $("#updateBiographie").val($btn.data("biographie"));
             }
 
-            // ===== BOOKS =====
             if (resource === "books") {
                 $("#updateTitre").val($btn.data("titre"));
                 $("#updateAuteurId").val($btn.data("auteur_id"));
@@ -59,10 +62,11 @@ $(function () {
             openModal($("#modal-update"));
         }
 
-        // ===== DELETE =====
+        // ===== SUPPRESSION =====
         if (modalType === "delete") {
             let message = "";
 
+            // Message de confirmation selon la ressource
             if (resource === "categories") {
                 message = `Voulez-vous vraiment supprimer la catégorie "<strong>${$btn.data("nom")}</strong>" ?`;
             }
@@ -82,10 +86,12 @@ $(function () {
         }
     });
 
+    // Fermeture de modal via le bouton "close"
     $(".close-modal").on("click", function () {
         closeModal($(this).closest(".modal"));
     });
 
+    // Fermeture de modal en cliquant en dehors du contenu
     $(".modal").on("click", function (e) {
         if (e.target === this) {
             closeModal($(this));

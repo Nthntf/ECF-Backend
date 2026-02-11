@@ -9,6 +9,7 @@ class CategorieController extends BaseController
 {
     public function index()
     {
+        // Récupère toutes les catégories
         $categorieModel = new CategorieModel();
         $categories = $categorieModel->getAllCategories();
 
@@ -21,11 +22,13 @@ class CategorieController extends BaseController
 
     public function add()
     {
+        // Autorise uniquement les requêtes POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /categories');
             exit;
         }
 
+        // Validation du champ obligatoire
         if (empty($_POST['nom'])) {
             $_SESSION['error'] = "Le nom de la catégorie est obligatoire";
             header('Location: /categories');
@@ -40,6 +43,7 @@ class CategorieController extends BaseController
 
             $_SESSION['success'] = "Catégorie ajoutée avec succès";
         } catch (\RuntimeException $e) {
+            // Stocke l'erreur pour affichage
             $_SESSION['error'] = $e->getMessage();
         }
 

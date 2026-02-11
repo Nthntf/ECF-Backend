@@ -37,13 +37,14 @@ class AuthorModel
         try {
             $query = $this->db->prepare(
                 'SELECT id, nom, prenom, biographie 
-             FROM auteurs 
-             WHERE id = :id'
+                 FROM auteurs 
+                 WHERE id = :id'
             );
 
             $query->execute([':id' => $id]);
             $author = $query->fetch(PDO::FETCH_ASSOC);
 
+            // Retourne null si aucun résultat
             return $author ?: null;
         } catch (PDOException $e) {
             error_log($e->getMessage());
@@ -112,6 +113,7 @@ class AuthorModel
         try {
             $sql = 'SELECT COUNT(*) FROM auteurs';
 
+            // Ajoute un filtre si recherche présente
             if ($search !== null && $search !== '') {
                 $sql .= ' WHERE (
                         nom LIKE :search1
@@ -134,13 +136,13 @@ class AuthorModel
         }
     }
 
-
     public function getAuthorsPaginated(int $limit, int $offset, ?string $search = null): array
     {
         try {
             $sql = 'SELECT id, nom, prenom, biographie
-                FROM auteurs';
+                    FROM auteurs';
 
+            // Filtre de recherche optionnel
             if ($search !== null && $search !== '') {
                 $sql .= ' WHERE (
                         nom LIKE :search1
@@ -148,8 +150,9 @@ class AuthorModel
                       )';
             }
 
+            // Tri alphabétique + pagination
             $sql .= ' ORDER BY nom ASC
-                  LIMIT :limit OFFSET :offset';
+                      LIMIT :limit OFFSET :offset';
 
             $query = $this->db->prepare($sql);
 

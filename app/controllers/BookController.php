@@ -17,18 +17,22 @@ class BookController extends BaseController
         $categoryModel = new CategorieModel();
         $bookModel = new BookModel();
 
+        // Données nécessaires aux formulaires (auteurs + catégories)
         $auteurs = $authorModel->getAllAuthors();
         $categories = $categoryModel->getAllCategories();
 
+        // Gestion de la recherche
         $search = isset($_GET['search']) && trim($_GET['search']) !== ''
             ? trim($_GET['search'])
             : null;
 
+        // Pagination
         $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
         $itemsPerPage = $_ENV['BOOKS_PER_PAGE'];
 
         $totalItems = $bookModel->countBooks($search);
 
+        // Conserve le paramètre search dans les liens du paginator
         if ($search) {
             $urlPattern = '/books?search=' . urlencode($search) . '&page=(:num)';
         } else {
@@ -42,6 +46,7 @@ class BookController extends BaseController
             $urlPattern
         );
 
+        // Redirige si la page dépasse le total
         if ($currentPage > $paginator->getNumPages() && $paginator->getNumPages() > 0) {
             header('Location: /books');
             exit;
@@ -58,6 +63,7 @@ class BookController extends BaseController
         $parsedown = new Parsedown();
         $livres = [];
 
+        // Transformation des données + conversion Markdown en HTML
         foreach ($books as $book) {
             $livres[] = [
                 'id' => $book['id'],
@@ -94,11 +100,13 @@ class BookController extends BaseController
 
     public function add()
     {
+        // Autorise uniquement les requêtes POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /books');
             exit;
         }
 
+        // Validation des champs obligatoires
         if (
             empty($_POST['titre']) ||
             empty($_POST['auteur_id']) ||
@@ -112,6 +120,7 @@ class BookController extends BaseController
             exit;
         }
 
+        // Nettoyage et typage des données
         $titre = trim($_POST['titre']);
         $auteur_id = (int) $_POST['auteur_id'];
         $categorie_id = (int) $_POST['categorie_id'];
@@ -228,6 +237,7 @@ class BookController extends BaseController
             $bookModel = new BookModel();
             $newLike = $bookModel->toggleLike($id);
 
+            // Retourne 404 si le livre n'existe pas
             if ($newLike === null) {
                 http_response_code(404);
                 echo json_encode([
@@ -237,6 +247,7 @@ class BookController extends BaseController
                 return;
             }
 
+            // Réponse JSON pour mettre à jour dynamiquement le bouton
             echo json_encode([
                 'success' => true,
                 'liked' => $newLike

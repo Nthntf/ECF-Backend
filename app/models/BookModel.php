@@ -16,6 +16,7 @@ class BookModel
         $this->db = Database::getInstance();
     }
 
+    // Récupère tous les livres avec leurs auteurs et catégories
     public function getAllBooks(): ?array
     {
         try {
@@ -28,14 +29,11 @@ class BookModel
                     l.disponible,
                     l.synopsis,
                     l.`like` AS is_liked,
-
                     a.id AS auteur_id,
                     a.nom AS auteur_nom,
                     a.prenom AS auteur_prenom,
-
                     c.id AS categorie_id,
                     c.nom AS categorie_nom
-
                 FROM livres l
                 INNER JOIN auteurs a ON l.auteur_id = a.id
                 INNER JOIN categories c ON l.categorie_id = c.id'
@@ -49,6 +47,7 @@ class BookModel
         }
     }
 
+    // Ajoute un livre en base
     public function addBook(
         string $titre,
         int $auteur_id,
@@ -83,6 +82,7 @@ class BookModel
         }
     }
 
+    // Met à jour un livre existant
     public function updateBook(
         int $id,
         string $titre,
@@ -125,6 +125,7 @@ class BookModel
         }
     }
 
+    // Supprime un livre par ID
     public function deleteBook(int $id): bool
     {
         try {
@@ -132,38 +133,27 @@ class BookModel
                 'DELETE FROM livres WHERE id = :id'
             );
 
-            return $query->execute([
-                ':id' => $id
-            ]);
+            return $query->execute([':id' => $id]);
         } catch (PDOException $e) {
             error_log($e->getMessage());
             throw new RuntimeException("Erreur lors de la suppression du livre");
         }
     }
 
+    // Bascule l'état like d'un livre
     public function toggleLike(int $id): ?bool
     {
         try {
-            $query = $this->db->prepare(
-                'SELECT `like` FROM livres WHERE id = :id'
-            );
+            $query = $this->db->prepare('SELECT `like` FROM livres WHERE id = :id');
             $query->execute([':id' => $id]);
             $book = $query->fetch(PDO::FETCH_ASSOC);
 
-            if (!$book) {
-                return null;
-            }
+            if (!$book) return null;
 
             $newLike = $book['like'] ? 0 : 1;
 
-            $update = $this->db->prepare(
-                'UPDATE livres SET `like` = :like WHERE id = :id'
-            );
-
-            $update->execute([
-                ':like' => $newLike,
-                ':id' => $id
-            ]);
+            $update = $this->db->prepare('UPDATE livres SET `like` = :like WHERE id = :id');
+            $update->execute([':like' => $newLike, ':id' => $id]);
 
             return (bool) $newLike;
         } catch (PDOException $e) {
@@ -172,30 +162,20 @@ class BookModel
         }
     }
 
+    // Récupère un livre par ID
     public function getBookById(int $id): ?array
     {
         try {
             $query = $this->db->prepare(
                 'SELECT 
-                l.id,
-                l.titre,
-                l.annee_publication,
-                l.isbn,
-                l.disponible,
-                l.synopsis,
-                l.`like` AS is_liked,
-
-                a.id AS auteur_id,
-                a.nom AS auteur_nom,
-                a.prenom AS auteur_prenom,
-
-                c.id AS categorie_id,
-                c.nom AS categorie_nom
-
-            FROM livres l
-            INNER JOIN auteurs a ON l.auteur_id = a.id
-            INNER JOIN categories c ON l.categorie_id = c.id
-            WHERE l.id = :id'
+                    l.id, l.titre, l.annee_publication, l.isbn, l.disponible, l.synopsis,
+                    l.`like` AS is_liked,
+                    a.id AS auteur_id, a.nom AS auteur_nom, a.prenom AS auteur_prenom,
+                    c.id AS categorie_id, c.nom AS categorie_nom
+                 FROM livres l
+                 INNER JOIN auteurs a ON l.auteur_id = a.id
+                 INNER JOIN categories c ON l.categorie_id = c.id
+                 WHERE l.id = :id'
             );
 
             $query->execute([':id' => $id]);
@@ -208,21 +188,22 @@ class BookModel
         }
     }
 
+    // Compte le nombre de livres (avec filtre optionnel)
     public function countBooks(?string $search = null): int
     {
         try {
             $sql = 'SELECT COUNT(*) 
-                FROM livres l
-                INNER JOIN auteurs a ON l.auteur_id = a.id
-                INNER JOIN categories c ON l.categorie_id = c.id';
+                    FROM livres l
+                    INNER JOIN auteurs a ON l.auteur_id = a.id
+                    INNER JOIN categories c ON l.categorie_id = c.id';
 
             if ($search !== null && $search !== '') {
                 $sql .= ' WHERE (
-                        l.titre LIKE :search1
-                        OR a.nom LIKE :search2
-                        OR a.prenom LIKE :search3
-                        OR c.nom LIKE :search4
-                      )';
+                            l.titre LIKE :search1
+                            OR a.nom LIKE :search2
+                            OR a.prenom LIKE :search3
+                            OR c.nom LIKE :search4
+                          )';
             }
 
             $query = $this->db->prepare($sql);
@@ -242,40 +223,30 @@ class BookModel
         }
     }
 
+    // Récupère les livres paginés avec filtre optionnel
     public function getBooksPaginated(int $limit, int $offset, ?string $search = null): array
     {
         try {
             $sql = 'SELECT 
-                    l.id,
-                    l.titre,
-                    l.annee_publication,
-                    l.isbn,
-                    l.disponible,
-                    l.synopsis,
-                    l.`like` AS is_liked,
-
-                    a.id AS auteur_id,
-                    a.nom AS auteur_nom,
-                    a.prenom AS auteur_prenom,
-
-                    c.id AS categorie_id,
-                    c.nom AS categorie_nom
-
-                FROM livres l
-                INNER JOIN auteurs a ON l.auteur_id = a.id
-                INNER JOIN categories c ON l.categorie_id = c.id';
+                        l.id, l.titre, l.annee_publication, l.isbn, l.disponible, l.synopsis,
+                        l.`like` AS is_liked,
+                        a.id AS auteur_id, a.nom AS auteur_nom, a.prenom AS auteur_prenom,
+                        c.id AS categorie_id, c.nom AS categorie_nom
+                    FROM livres l
+                    INNER JOIN auteurs a ON l.auteur_id = a.id
+                    INNER JOIN categories c ON l.categorie_id = c.id';
 
             if ($search !== null && $search !== '') {
                 $sql .= ' WHERE (
-                        l.titre LIKE :search1
-                        OR a.nom LIKE :search2
-                        OR a.prenom LIKE :search3
-                        OR c.nom LIKE :search4
-                      )';
+                            l.titre LIKE :search1
+                            OR a.nom LIKE :search2
+                            OR a.prenom LIKE :search3
+                            OR c.nom LIKE :search4
+                          )';
             }
 
             $sql .= ' ORDER BY l.titre ASC
-                  LIMIT :limit OFFSET :offset';
+                      LIMIT :limit OFFSET :offset';
 
             $query = $this->db->prepare($sql);
 
@@ -291,7 +262,6 @@ class BookModel
             $query->bindValue(':offset', $offset, PDO::PARAM_INT);
 
             $query->execute();
-
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             die($e->getMessage());

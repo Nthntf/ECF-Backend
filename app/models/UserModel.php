@@ -16,6 +16,7 @@ class UserModel
         $this->db = Database::getInstance();
     }
 
+    // Récupère un utilisateur par son nom d'utilisateur
     public function findByUsername(string $username): ?array
     {
         try {
@@ -29,6 +30,7 @@ class UserModel
             throw new RuntimeException("Erreur lors de la récupération de l'utilisateur");
         }
 
+        // Retourne les informations de l'utilisateur ou null si inexistant
         return $user ?: null;
     }
 }
